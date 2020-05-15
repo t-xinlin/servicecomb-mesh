@@ -22,10 +22,12 @@ import (
 	"testing"
 )
 
+const STATUS_OK = "200"
+
 func Test_GetRspSchema(t *testing.T) {
 	res := make(map[string]*MethRespond, 0)
-	res["200"] = &MethRespond{
-		Status: "200",
+	res[STATUS_OK] = &MethRespond{
+		Status: STATUS_OK,
 	}
 	m := DefMethod{
 		ownerSvc: "svc",
@@ -41,19 +43,22 @@ func Test_GetRspSchema(t *testing.T) {
 
 func Test_GetParamNameAndWhere(t *testing.T) {
 	res := make(map[string]*MethRespond, 0)
-	res["200"] = &MethRespond{
-		Status: "200",
+	res[STATUS_OK] = &MethRespond{
+		Status: STATUS_OK,
 	}
 
-	mParams := []MethParam{MethParam{
-		Name:  "para1",
-		Where: "query",
-		Indx:  0,
-	}, MethParam{
-		Name:  "para2",
-		Where: "body",
-		Indx:  1,
-	}}
+	mParams := []MethParam{
+		{
+			Name:  "para1",
+			Where: "query",
+			Indx:  0,
+		},
+		{
+			Name:  "para2",
+			Where: "body",
+			Indx:  1,
+		},
+	}
 
 	m := DefMethod{
 		ownerSvc: "svc",
@@ -81,19 +86,22 @@ func Test_GetParamNameAndWhere(t *testing.T) {
 
 func Test_GetParamSchema(t *testing.T) {
 	res := make(map[string]*MethRespond, 0)
-	res["200"] = &MethRespond{
-		Status: "200",
+	res[STATUS_OK] = &MethRespond{
+		Status: STATUS_OK,
 	}
 
-	mParams := []MethParam{MethParam{
-		Name:  "para1",
-		Where: "query",
-		Indx:  0,
-	}, MethParam{
-		Name:  "para2",
-		Where: "body",
-		Indx:  1,
-	}}
+	mParams := []MethParam{
+		{
+			Name:  "para1",
+			Where: "query",
+			Indx:  0,
+		},
+		{
+			Name:  "para2",
+			Where: "body",
+			Indx:  1,
+		},
+	}
 
 	m := DefMethod{
 		ownerSvc: "svc",
