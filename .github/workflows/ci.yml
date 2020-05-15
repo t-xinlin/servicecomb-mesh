@@ -74,15 +74,17 @@ jobs:
         run: |
           go get github.com/mattn/goveralls
           go get golang.org/x/tools/cmd/cover
-          echo "PASS"
-#          go test -short -coverprofile coverage.out -covermode=atomic $(go list ./... | grep -v /vendor/)
-#          cat coverage.out >> coverage.txt
-#      - name: Upload Test Coverage
-#        uses: codecov/codecov-action@v1
-#        with:
-#          token: ${{ secrets.CODECOV_TOKEN }}
-#          file: ./coverage.txt
-#          fail_ci_if_error: true
+          export KUBE_CONFIG=tests/util/sample_kubeconfig
+          docker pull gomesh/mock-pilot:latest
+          docker run -d -p 15010:15010 gomesh/mock-pilot:latest
+          go test -short -coverprofile coverage.out -covermode=atomic $(go list ./... | grep -v /vendor/)
+          cat coverage.out >> coverage.txt
+      - name: Upload Test Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.txt
+          fail_ci_if_error: true
   build:
     needs: [lint, test]
     strategy:
