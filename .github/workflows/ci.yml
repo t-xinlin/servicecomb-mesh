@@ -99,4 +99,4 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
       - name: Build
-        run: go build ./cmd/mesher/main.go
+        run: go build ./cmd/mesher/mesher.go
