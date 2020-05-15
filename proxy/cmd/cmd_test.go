@@ -47,6 +47,7 @@ func TestConfigFromCmd_GeneratePortsMap(t *testing.T) {
 	t.Log(c.PortsMap)
 	assert.Equal(t, "127.0.0.1:80", c.PortsMap["rest"])
 }
+
 func TestConfigFromCmd_GeneratePortsMap2(t *testing.T) {
 
 	c := &cmd.ConfigFromCmd{
@@ -56,6 +57,7 @@ func TestConfigFromCmd_GeneratePortsMap2(t *testing.T) {
 	t.Log(c.PortsMap)
 	assert.Error(t, err)
 }
+
 func TestConfigFromCmd_GeneratePortsMap3(t *testing.T) {
 	os.Setenv(common.EnvServicePorts, "rest:80,grpc:90")
 	cmd.Init()
