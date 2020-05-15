@@ -1,6 +1,7 @@
 module github.com/t-xinlin/servicecomb-mesh
 
 require (
+	github.com/apache/servicecomb-mesher v0.0.0-00010101000000-000000000000
 	github.com/envoyproxy/go-control-plane v0.6.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-chassis/foundation v0.1.1-0.20191113114104-2b05871e9ec4
@@ -27,9 +28,9 @@ require (
 )
 
 replace (
+	github.com/apache/servicecomb-mesher => ./
 	github.com/openzipkin-contrib/zipkin-go-opentracing v0.3.5 => github.com/go-chassis/zipkin-go-opentracing v0.3.5-0.20190321072447-42cf74fc2a92
 	github.com/tetratelabs/go2sky v0.1.1-0.20190703154722-1eaab8035277 => github.com/SkyAPM/go2sky v0.1.1-0.20190703154722-1eaab8035277
-	github.com/apache/servicecomb-mesher => ./
 )
 
 go 1.14
