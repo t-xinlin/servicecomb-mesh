@@ -77,7 +77,7 @@ jobs:
           export KUBE_CONFIG=tests/util/sample_kubeconfig
           docker pull gomesh/mock-pilot:latest
           docker run -d -p 15010:15010 gomesh/mock-pilot:latest
-          go test -short -coverprofile coverage.out -covermode=atomic $(go list ./... | grep -v "/vendor/" | grep -v "/infras/")
+          go test -short -coverprofile coverage.out -covermode=atomic $(go list ./... | grep -v "/vendor/" | grep -v "/k8s*" | grep -v "/istio*" | grep -v "/egress*")
           cat coverage.out >> coverage.txt
       - name: Upload Test Coverage
         uses: codecov/codecov-action@v1
