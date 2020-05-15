@@ -1,0 +1,34 @@
+---
+cse:
+  protocols:
+    http:
+      listenAddress: 127.0.0.1:30101
+    rest-admin:
+      listenAddress: 127.0.0.1:30102 # listen addr use to adminAPI
+  service:
+    registry:
+      address: http://127.0.0.1:30100 # uri of service center
+      scope: full #set full to be able to discover other app's service
+    config:
+      client:
+        serverUri: https://127.0.0.1:30110 #uri of config center
+        type: servicecomb-kie
+        refreshMode: 1 # 1: only pull config.
+        refreshInterval: 30 # unit is second
+  handler:
+    chain:
+      Consumer:
+        outgoing: router,bizkeeper-consumer,loadbalance,tracing-consumer,transport #consumer handlers
+      Provider:
+        incoming: oauth2,tracing-provider #provider handlers
+
+## Mesher TLS is base on Go Chassis TLS config,  https://docs.go-chassis.com/user-guides/tls.html
+ssl:
+#  mesher-edge.rest.Provider.cipherPlugin: default
+#  mesher-edge.rest.Provider.verifyPeer: false
+#  mesher-edge.rest.Provider.cipherSuits: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+#  mesher-edge.rest.Provider.protocol: TLSv1.2
+#  mesher-edge.rest.Provider.caFile:
+#  mesher-edge.rest.Provider.certFile: server.crt
+#  mesher-edge.rest.Provider.keyFile: server.key
+#  mesher-edge.rest.Provider.certPwdFile:

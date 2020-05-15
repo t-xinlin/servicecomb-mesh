@@ -1,0 +1,101 @@
+name: CI # workflow 的名字
+
+# 在发生 push 或者是 pull request 事件时执行此 workflow
+# Trigger the workflow on push or pull request
+#on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  lint:
+    name: Code Checher
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14.3
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Format Checher
+        run: |
+          bash -x scripts/formatChecker.sh
+      - name: DeadCode Checker
+        run: |
+          go get -u github.com/tsenart/deadcode
+          bash -x scripts/deadCodeChecker.sh
+      - name: Misspell Checker
+        run: |
+          go get -u github.com/client9/misspell
+          bash -x scripts/misspellChecker.sh
+      - name: GoConst Checker
+        run: |
+          go get -u github.com/jgautheron/goconst/cmd/goconst
+          bash -x scripts/goConstChecker.sh
+      - name: GoCyclo Checker
+        run: |
+          go get github.com/fzipp/gocyclo
+          bash -x scripts/goCycloChecker.sh
+      - name: Lint Go Code
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin  # temporary fix. See https://github.com/actions/setup-go/issues/14
+          go get -u golang.org/x/lint/golint
+          echo "PASS"
+#          golint -set_exit_status $(go list ./... | grep -v /vendor/)
+
+  test:
+    needs: [lint]
+    strategy:
+      matrix: # 这个我也不知道怎么翻译了，大致实现的功能是把每个变量的每种取值都遍历一遍
+        go_version: [1.14.3] # key: valueSet
+        os: [ubuntu-latest]
+    name: Test with go ${{ matrix.go_version }} on ${{ matrix.os }} # 在 job.<job_id>.strategy.matrix 中定义的变量在整个 job 下都有效
+    runs-on: ${{ matrix.os }} # 使用的 OS
+    steps: # 步骤
+      - name: Set up Go ${{ matrix.go_version }} # 每一步的名字
+        uses: actions/setup-go@v1 # 要引用的 actions，这里用 setup-go 来进行 go 环境的安装
+        with: # 指定 actions 的入参
+          go-version: ${{ matrix.go_version }}
+        id: go  # 参考 https://help.github.com/en/github/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsid ，不知道怎么解释 Orz
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+      - name: Get dependencies # 安装项目依赖
+        run: | # 用来执行 shell 语句
+          go get -v -t -d ./...
+          if [ -f Gopkg.toml ]; then
+              curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+              dep ensure
+          fi
+      - name: Run Unit tests.
+        run: |
+          go get github.com/mattn/goveralls
+          go get golang.org/x/tools/cmd/cover
+          go test -short -coverprofile coverage.out -covermode=atomic $(go list ./... | grep -v /vendor/)
+          cat coverage.out >> coverage.txt
+      - name: Upload Test Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.txt
+          fail_ci_if_error: true
+  build:
+    needs: [lint, test]
+    strategy:
+      matrix: # 这个我也不知道怎么翻译了，大致实现的功能是把每个变量的每种取值都遍历一遍
+        go_version: [1.12, 1.14.3] # key: valueSet
+        os: [ubuntu-latest]
+    name: Build with go ${{ matrix.go_version }} on ${{ matrix.os }} # 在 job.<job_id>.strategy.matrix 中定义的变量在整个 job 下都有效
+    runs-on: ${{ matrix.os }} # 使用的 OS
+    steps:
+      - name: Set up Go ${{ matrix.go_version }} # 每一步的名字
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go_version }}
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Build
+        run: go build ./cmd/mesher/main.go
