@@ -68,4 +68,6 @@ func TestDubboCodec_DecodeDubboReqBody(t *testing.T) {
 
 	// case DecodeDubboRsqHead
 	d.DecodeDubboRsqHead(resp, headBuf, &bodyLen)
+
+	GCurMSGID = 0
 }
