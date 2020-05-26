@@ -53,15 +53,16 @@ func Test_GetParamNameAndWhere(t *testing.T) {
 		Status: "200",
 	}
 
-	mParams := []MethParam{MethParam{
+	mParams := []MethParam{{
 		Name:  "para1",
 		Where: "query",
 		Indx:  0,
-	}, MethParam{
+	}, {
 		Name:  "para2",
 		Where: "body",
 		Indx:  1,
-	}}
+	},
+	}
 
 	m := DefMethod{
 		ownerSvc: "svc",
@@ -93,15 +94,16 @@ func Test_GetParamSchema(t *testing.T) {
 		Status: "200",
 	}
 
-	mParams := []MethParam{MethParam{
+	mParams := []MethParam{{
 		Name:  "para1",
 		Where: "query",
 		Indx:  0,
-	}, MethParam{
+	}, {
 		Name:  "para2",
 		Where: "body",
 		Indx:  1,
-	}}
+	},
+	}
 
 	m := DefMethod{
 		ownerSvc: "svc",
