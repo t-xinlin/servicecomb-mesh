@@ -161,10 +161,10 @@ func Test_CovertSwaggerMethordToLocalMethord(t *testing.T) {
 	srcMethod := &registry.MethodInfo{
 		Parameters: paras,
 		Response: map[string]registry.Response{
-			"200": registry.Response{
+			"200": {
 				Schema: map[string]string{"type": "string"},
 			},
-			"201": registry.Response{
+			"201": {
 				Schema: map[string]string{"$ref": "/v/hello"},
 			},
 		},
