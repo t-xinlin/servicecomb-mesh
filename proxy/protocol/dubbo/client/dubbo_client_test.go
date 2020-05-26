@@ -39,8 +39,6 @@ func TestClientMgr_GetClient(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 
-	defer ts.Close()
-
 	addr := ts.URL
 	u, _ := url.Parse(ts.URL)
 	addr = u.Host
@@ -66,4 +64,14 @@ func TestClientMgr_GetClient(t *testing.T) {
 
 	// case get addr
 	c.GetAddr()
+
+	// case net error
+	ts.Close()
+
+	c, err = clientMgr.GetClient(addr, 0)
+	assert.NoError(t, err)
+	assert.NotNil(t, c)
+
+	req = dubbo.NewDubboRequest()
+	c.Send(req)
 }
