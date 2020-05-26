@@ -131,7 +131,7 @@ func Test_GetParamSchema(t *testing.T) {
 func Test_CovertSwaggerMethordToLocalMethord(t *testing.T) {
 	schema := &registry.SchemaContent{
 		Definition: map[string]registry.Definition{
-			"hello": registry.Definition{},
+			"hello": {},
 		},
 	}
 	paras := make([]registry.Parameter, 0)
@@ -210,7 +210,7 @@ func (m *MockContractDiscoveryService) GetSchemaContentByServiceName(svcName, ve
 	var sc []*registry.SchemaContent
 	sc = append(sc, &registry.SchemaContent{
 		Paths: map[string]map[string]registry.MethodInfo{
-			"hello": map[string]registry.MethodInfo{},
+			"hello": {},
 		},
 	})
 	return nil
