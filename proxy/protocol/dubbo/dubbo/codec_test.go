@@ -268,6 +268,26 @@ func TestDubboCodec_DecodeDubboReqBody(t *testing.T) {
 		// case DecodeDubboRsqHead
 		d.DecodeDubboRsqHead(resp, headBuf, &bodyLen)
 	})
+	// case EncodeDubboRsp
+	d.EncodeDubboRsp(resp, wbf)
+
+	// case EncodeDubboReq
+	d.EncodeDubboReq(req, wbf)
+
+	// case DecodeDubboRspBody
+	d.DecodeDubboRspBody(rbf, resp)
+
+	// case DecodeDubboReqBodyForRegstry
+	d.DecodeDubboReqBodyForRegstry(req, rbf)
+	headBuf := make([]byte, HeaderLength)
+	bodyLen := 0
+
+	// case DecodeDubboReqHead
+	d.DecodeDubboReqHead(req, headBuf, &bodyLen)
+	bodyLen = 0
+
+	// case DecodeDubboRsqHead
+	d.DecodeDubboRsqHead(resp, headBuf, &bodyLen)
 
 	GCurMSGID = 0
 }
