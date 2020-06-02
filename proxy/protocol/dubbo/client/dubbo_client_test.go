@@ -25,6 +25,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 )
 
 func init() {
@@ -64,6 +65,15 @@ func TestClientMgr_GetClient(t *testing.T) {
 
 	// case get addr
 	c.GetAddr()
+
+	go func() {
+		c.Close()
+	}()
+
+	select {
+	case <-time.After(time.Second):
+		c.routeMgr.Done()
+	}
 
 	// case net error
 	ts.Close()
