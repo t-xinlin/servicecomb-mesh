@@ -61,7 +61,7 @@ func TestNewDubboClientConnetction(t *testing.T) {
 	connClinet := NewDubboClientConnetction(conn, NewDubboClient(addr, nil, time.Second*5), nil)
 	go func(c *DubboClientConnection) {
 		t := time.NewTimer(time.Second)
-		for _ = range t.C {
+		for range t.C {
 			c.SendMsg(dubbo.NewDubboRequest())
 		}
 	}(connClinet)
