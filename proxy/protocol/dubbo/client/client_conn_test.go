@@ -27,7 +27,7 @@ import (
 	"time"
 )
 
-func TestNewDubboClientConnetction(t *testing.T) {
+func TestClientConn(t *testing.T) {
 	addr := "127.0.0.1:32100"
 	tcpAddr, _ := net.ResolveTCPAddr("tcp", addr)
 	l, _ := net.ListenTCP("tcp", tcpAddr)
@@ -49,7 +49,12 @@ func TestNewDubboClientConnetction(t *testing.T) {
 			rsp := &dubbo.DubboRsp{}
 			coder.EncodeDubboRsp(rsp, &buffer)
 
-			conn.Write(buffer.GetValidData())
+			hf := buffer.GetValidData()
+			conn.Write(hf)
+
+			// case header[0] != MagicHigh
+			hf[0] = 0
+			conn.Write(hf)
 		}
 	}(l)
 
@@ -66,10 +71,26 @@ func TestNewDubboClientConnetction(t *testing.T) {
 		}
 	}(connClinet)
 
+	// Case conn open
 	connClinet.Open()
 
+	// Case conn closed
 	select {
-	case <-time.After(time.Second * 10):
+	case <-time.After(time.Second * 3):
+		conn.Close()
+		connClinet.SendMsg(dubbo.NewDubboRequest())
+	}
+	// case close
+	connClinet.Close()
+	assert.Equal(t, true, connClinet.Closed())
+	connClinet.SendMsg(dubbo.NewDubboRequest())
+
+	select {
+	case <-time.After(time.Second * 5):
 		connClinet.Close()
 	}
+
+	// case conn closed
+	NewDubboClientConnetction(conn, NewDubboClient(addr, nil, time.Second*5), nil)
+
 }
